@@ -15,6 +15,31 @@ struct CopyEffect {//跨函数拷贝摘要的一条记录，记录函数对目�
 
 using CopySummary = std::vector<CopyEffect>;//复制摘要
 
+static bool isHeapAllocCallName(const std::string &callee) {
+    return callee == "malloc" || callee == "calloc" || callee == "realloc" ||
+           callee == "aligned_alloc";
+}
+
+static uint64_t directHeapAllocSize(CallInst *CI) {
+    if (!CI) return 0;
+    std::string callee = getCalledFuncName(CI).str();
+    if (callee == "malloc" || callee == "realloc" || callee == "aligned_alloc") {
+        unsigned sizeArg = (callee == "aligned_alloc") ? 1u : 0u;
+        if (CI->arg_size() <= sizeArg) return 0;
+        if (auto *C = dyn_cast<ConstantInt>(CI->getArgOperand(sizeArg))) {
+            return C->getZExtValue();
+        }
+        return 0;
+    }
+    if (callee == "calloc" && CI->arg_size() >= 2) {
+        auto *Count = dyn_cast<ConstantInt>(CI->getArgOperand(0));
+        auto *Elem = dyn_cast<ConstantInt>(CI->getArgOperand(1));
+        if (!Count || !Elem) return 0;
+        return Count->getZExtValue() * Elem->getZExtValue();
+    }
+    return 0;
+}
+
 static Value *basePtr(Value *V) {//指针溯源
     while (V) {
         if (isa<AllocaInst>(V) || isa<Argument>(V) || isa<GlobalVariable>(V)) return V;
@@ -24,10 +49,6 @@ static Value *basePtr(Value *V) {//指针溯源
         }
         if (auto *BC = dyn_cast<BitCastInst>(V)) {
             V = stripPtr(BC->getOperand(0));
-            continue;
-        }
-        if (auto *LI = dyn_cast<LoadInst>(V)) {
-            V = stripPtr(LI->getPointerOperand());
             continue;
         }
         break;
@@ -52,10 +73,6 @@ static uint64_t constByteOffsetFromBase(Value *V, const DataLayout &DL) {//计�
             cur = stripPtr(BC->getOperand(0));
             continue;
         }
-        if (auto *LI = dyn_cast<LoadInst>(cur)) {
-            cur = stripPtr(LI->getPointerOperand());
-            continue;
-        }
         break;
     }
 
@@ -74,6 +91,17 @@ static uint64_t knownGlobalObjSize(GlobalVariable *GV, const DataLayout &DL) {//
     Type *ty = GV->getValueType();
     if (!ty || !ty->isSized()) return 0;
     return DL.getTypeAllocSize(ty);
+}
+
+static uint64_t constLocalByteOffset(Value *V, const DataLayout &DL) {
+    V = stripPtr(V);
+    if (auto *GEP = dyn_cast<GetElementPtrInst>(V)) {
+        APInt apOff(DL.getPointerTypeSizeInBits(GEP->getType()), 0, true);
+        if (GEP->accumulateConstantOffset(DL, apOff)) {
+            return apOff.getZExtValue();
+        }
+    }
+    return 0;
 }
 
 static uint64_t knownConstStringLength(Value *V) {//获取常量字符串长度
@@ -207,6 +235,72 @@ static std::map<Function *, CopySummary> buildInterprocCopySummary(ModuleMap &mo
     return summary;
 }
 
+static uint64_t collectOneReturnSize(Function &F,
+                                     const std::map<Function *, uint64_t> &known) {
+    uint64_t result = 0;
+
+    for (Instruction &I : instructions(&F)) {
+        auto *RI = dyn_cast<ReturnInst>(&I);
+        if (!RI) continue;
+        Value *RV = stripPtr(RI->getReturnValue());
+        if (!RV) return 0;
+
+        uint64_t size = 0;
+        if (auto *CI = dyn_cast<CallInst>(RV)) {
+            size = directHeapAllocSize(CI);
+            if (!size) {
+                Function *CF = resolveDirectCallee(CI);
+                if (CF) {
+                    auto it = known.find(CF);
+                    if (it != known.end()) size = it->second;
+                }
+            }
+        } else if (auto *BC = dyn_cast<BitCastInst>(RV)) {
+            Value *Src = stripPtr(BC->getOperand(0));
+            if (auto *CI = dyn_cast<CallInst>(Src)) {
+                size = directHeapAllocSize(CI);
+                if (!size) {
+                    Function *CF = resolveDirectCallee(CI);
+                    if (CF) {
+                        auto it = known.find(CF);
+                        if (it != known.end()) size = it->second;
+                    }
+                }
+            }
+        }
+
+        if (!size) return 0;
+        if (result == 0) result = size;
+        else if (result != size) return 0;
+    }
+
+    return result;
+}
+
+static std::map<Function *, uint64_t> buildInterprocReturnSizeSummary(ModuleMap &modules) {
+    std::map<Function *, uint64_t> summary;
+    for (auto &p : modules) {
+        for (Function &F : *p.second) {
+            if (!F.isDeclaration()) summary[&F] = 0;
+        }
+    }
+
+    for (int iter = 0; iter < kInterprocMaxIters; ++iter) {
+        bool changed = false;
+        auto old = summary;
+        for (auto &it : summary) {
+            uint64_t now = collectOneReturnSize(*it.first, old);
+            if (now != it.second) {
+                it.second = now;
+                changed = true;
+            }
+        }
+        if (!changed) break;
+    }
+
+    return summary;
+}
+
 static void propagateAliasBases(Function &F,
                                 PointerSlotUF &uf,
                                 std::map<Value *, std::set<Value *>> &rootBases) {//把“某个指针根可能指向哪些基对象（alloca）沿着指针赋值关系传播开
@@ -244,15 +338,23 @@ static Value *findSizedAliasBase(Value *ptr,
                                  PointerSlotUF &uf,
                                  std::map<Value *, std::set<Value *>> &rootBases,
                                  std::map<Value *, uint64_t> &allocBytes) {//给任意指针 ptr 找到一个“既是别名候选、又已知大小”的基对象
+    Value *best = nullptr;
+    uint64_t bestSize = UINT64_MAX;
     Value *root = finalPtrSlot(ptr, uf);
     if (root) {
         auto it = rootBases.find(root);
         if (it != rootBases.end()) {
             for (Value *cand : it->second) {
-                if (allocBytes.count(cand)) return cand;
+                auto sit = allocBytes.find(cand);
+                if (sit != allocBytes.end() && sit->second < bestSize) {
+                    best = cand;
+                    bestSize = sit->second;
+                }
             }
         }
     }
+
+    if (best) return best;
 
     Value *bp = basePtr(ptr);
     if (bp && allocBytes.count(bp)) return bp;
@@ -264,26 +366,80 @@ static Value *findSizedAliasBase(Value *ptr,
 static void collectObjectSizes(Function &F,
                                Module *M,
                                const DataLayout &DL,
+                               const std::map<Function *, uint64_t> &returnSizeSummary,
                                std::map<Value *, uint64_t> &allocBytes) {//收集当前函数后续分析会用到的对象大小表
     for (Instruction &I : instructions(&F)) {
         if (auto *AI = dyn_cast<AllocaInst>(&I)) {
+            // 跳过“单个指针槽位”对象（如 Student** tmp），避免把8字节槽位误当作真实缓冲区。
+            if (!AI->isArrayAllocation() && AI->getAllocatedType()->isPointerTy()) continue;
             uint64_t sz = knownAllocaSize(AI, DL);
             if (sz) allocBytes[AI] = sz;
+            continue;
         }
+
+        auto *CI = dyn_cast<CallInst>(&I);
+        if (!CI || !CI->getType()->isPointerTy()) continue;
+
+        uint64_t sz = directHeapAllocSize(CI);
+        if (!sz) {
+            Function *CF = resolveDirectCallee(CI);
+            if (CF) {
+                auto it = returnSizeSummary.find(CF);
+                if (it != returnSizeSummary.end()) sz = it->second;
+            }
+        }
+        if (sz) allocBytes[CI] = sz;
     }
     for (GlobalVariable &GV : M->globals()) {
         uint64_t sz = knownGlobalObjSize(&GV, DL);
         if (sz) allocBytes[&GV] = sz;
+    }
+
+    for (int iter = 0; iter < 4; ++iter) {
+        bool changed = false;
+        for (Instruction &I : instructions(&F)) {
+            if (!I.getType()->isPointerTy()) continue;
+
+            Value *src = nullptr;
+            uint64_t off = 0;
+            if (auto *GEP = dyn_cast<GetElementPtrInst>(&I)) {
+                src = stripPtr(GEP->getPointerOperand());
+                off = constLocalByteOffset(GEP, DL);
+            } else if (auto *BC = dyn_cast<BitCastInst>(&I)) {
+                src = stripPtr(BC->getOperand(0));
+            } else {
+                continue;
+            }
+
+            auto sit = allocBytes.find(src);
+            if (sit == allocBytes.end()) continue;
+            if (off >= sit->second) continue;
+
+            uint64_t derived = sit->second - off;
+            auto it = allocBytes.find(&I);
+            if (it == allocBytes.end() || derived < it->second) {
+                allocBytes[&I] = derived;
+                changed = true;
+            }
+        }
+        if (!changed) break;
     }
 }
 
 static void buildAliasBases(Function &F,
                             Module *M,
                             PointerSlotUF &uf,
+                            const std::map<Value *, uint64_t> &allocBytes,
                             std::map<Value *, std::set<Value *>> &rootBases) {//先把“全局对象”放进别名基集合，再调用传播函数把这些基信息扩散到函数里的各个指针根
     for (GlobalVariable &GV : M->globals()) {
         Value *r = finalPtrSlot(&GV, uf);
-        if (r) rootBases[r].insert(&GV);
+        if (r && allocBytes.count(&GV)) rootBases[r].insert(&GV);
+    }
+    for (Instruction &I : instructions(&F)) {
+        if (!I.getType()->isPointerTy()) continue;
+        if (!allocBytes.count(&I)) continue;
+        Value *r = finalPtrSlot(&I, uf);
+        if (r) rootBases[r].insert(&I);
     }
     propagateAliasBases(F, uf, rootBases);
 }
@@ -470,14 +626,15 @@ static void analyzeOneFunction(Function &F,
                                Module *M,//Module对象表示一个LLVM IR模块，包含了函数、全局变量和其他IR元素
                                const DataLayout &DL,//datalayout提供了目标平台的数据类型大小和对齐信息
                                const std::map<Function *, CopySummary> &interprocSummary,//interprocSummary表示跨函数传播的复制效应摘要信息，记录了函数参数之间的复制关系和复制大小等信息
+                               const std::map<Function *, uint64_t> &returnSizeSummary,
                                std::set<std::string> &dedup,
                                std::vector<BugRecord> &out) {
     std::map<Value *, uint64_t> allocBytes;
-    collectObjectSizes(F, M, DL, allocBytes);
+    collectObjectSizes(F, M, DL, returnSizeSummary, allocBytes);
 
     PointerSlotUF uf = buildPointerSlotUF(F);
     std::map<Value *, std::set<Value *>> rootBases;
-    buildAliasBases(F, M, uf, rootBases);
+    buildAliasBases(F, M, uf, allocBytes, rootBases);
 
     detectMemOpOverflows(F, DL, uf, rootBases, allocBytes, dedup, out);
     detectStringOpOverflows(F, DL, uf, rootBases, allocBytes, dedup, out);
@@ -488,6 +645,7 @@ static void analyzeOneFunction(Function &F,
 void BufferOverflowPass::run(ModuleMap &modules, std::vector<BugRecord> &out) {
     std::set<std::string> dedup;
     auto interprocSummary = buildInterprocCopySummary(modules);
+    auto returnSizeSummary = buildInterprocReturnSizeSummary(modules);
 
     for (auto &p : modules) {
         Module *M = p.second;
@@ -495,7 +653,7 @@ void BufferOverflowPass::run(ModuleMap &modules, std::vector<BugRecord> &out) {
 
         for (Function &F : *M) {
             if (F.isDeclaration()) continue;
-            analyzeOneFunction(F, M, DL, interprocSummary, dedup, out);
+            analyzeOneFunction(F, M, DL, interprocSummary, returnSizeSummary, dedup, out);
         }
     }
 }
