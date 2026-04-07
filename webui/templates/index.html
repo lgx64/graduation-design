@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>graduation-design 静态分析诊断台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="page">
+        <header class="hero">
+            <div>
+                <h1>graduation-design 静态分析诊断台</h1>
+                <p>支持单文件粘贴 / 上传，也支持 zip 工程上传，并按文件高亮问题行。</p>
+            </div>
+            <div class="hero-actions">
+                <button id="load-sample-btn" type="button">载入空指针示例</button>
+                <button id="analyze-btn" type="button" class="primary">开始诊断</button>
+            </div>
+        </header>
+
+        <section class="panel controls controls-grid">
+            <div class="field-group">
+                <label for="source-file">上传单个 C 文件</label>
+                <input id="source-file" type="file" accept=".c,text/x-csrc,text/plain">
+            </div>
+            <div class="field-group">
+                <label for="project-zip">上传 zip 工程</label>
+                <input id="project-zip" type="file" accept=".zip,application/zip">
+            </div>
+            <div class="field-group grow">
+                <label for="filename-input">手工输入文件名</label>
+                <input id="filename-input" type="text" value="snippet.c" placeholder="例如 demo.c">
+            </div>
+            <div class="field-group mode-box">
+                <label>当前模式</label>
+                <div id="mode-pill" class="mode-pill">单文件</div>
+            </div>
+        </section>
+
+        <section class="stats-grid" id="stats-grid">
+            <article class="panel stat-card">
+                <span>问题总数</span>
+                <strong id="stat-bugs">0</strong>
+            </article>
+            <article class="panel stat-card">
+                <span>分析文件</span>
+                <strong id="stat-files">0</strong>
+            </article>
+            <article class="panel stat-card">
+                <span>失败文件</span>
+                <strong id="stat-failed">0</strong>
+            </article>
+            <article class="panel stat-card">
+                <span>最近生成</span>
+                <strong id="stat-time">-</strong>
+            </article>
+        </section>
+
+        <section class="workspace workspace-3col">
+            <div class="panel editor-panel">
+                <div class="panel-header">
+                    <h2>源码输入</h2>
+                    <span id="status-text" class="status idle">等待诊断</span>
+                </div>
+                <textarea id="source-editor" spellcheck="false" placeholder="在这里粘贴 C 源码；如果上传 zip 工程，代码视图会切换到工程文件浏览。"></textarea>
+            </div>
+
+            <div class="panel files-panel">
+                <div class="panel-header">
+                    <h2>文件列表</h2>
+                    <span id="file-summary">0 个文件</span>
+                </div>
+                <div id="file-list" class="file-list empty">尚未上传工程</div>
+            </div>
+
+            <div class="panel results-panel">
+                <div class="panel-header">
+                    <h2>诊断结果</h2>
+                    <span id="bug-summary">0 个问题</span>
+                </div>
+                <div class="filter-section">
+                    <div class="filter-title">Bug 类型筛选</div>
+                    <div id="pass-filters" class="pass-filters empty">暂无类型</div>
+                </div>
+                <div id="diagnostic-list" class="diagnostic-list empty">暂无结果</div>
+                <details class="raw-report">
+                    <summary>查看当前文件原始报告</summary>
+                    <pre id="raw-report-text"></pre>
+                </details>
+                <details class="raw-report">
+                    <summary>查看当前文件编译 / 运行输出</summary>
+                    <pre id="raw-output-text"></pre>
+                </details>
+            </div>
+        </section>
+
+        <section class="panel viewer-panel">
+            <div class="panel-header viewer-header">
+                <div>
+                    <h2>代码高亮视图</h2>
+                    <span id="active-file-label">当前文件：未选择</span>
+                </div>
+                <span>点击诊断项或文件项可切换并定位</span>
+            </div>
+            <div id="code-viewer" class="code-viewer"></div>
+        </section>
+    </div>
+
+    <script>
+        window.GRADUATION_SAMPLE_CODE = `#include <stdlib.h>
+
+void demo(int *p) {
+    if (p == NULL) {
+        *p = 1;
+    }
+}
+
+int main(void) {
+    demo(NULL);
+    return 0;
+}
+`;
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

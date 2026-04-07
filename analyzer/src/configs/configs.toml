@@ -1,0 +1,46 @@
+[analysis]
+verbose = true
+log_level = "debug"
+
+# 标准C内存函数
+[functions.alloc]
+fs = ["malloc", "calloc", "realloc", "_Znwm", "_Znam", "_Znwj", "_Znaj"]
+
+[functions.free]
+fs = ["free", "_ZdlPv", "_ZdaPv"]
+
+# 内核内存函数
+[functions.heapAllocFuncs]
+fs = ["kmalloc", "kzalloc", "__kmalloc", "vmalloc"]
+
+[functions.heapFreeFuncs]
+fs = ["kfree", "vfree"]
+
+# LLVM Debug 相关函数（可空）
+[functions.llvmDebug]
+fs = []
+
+# 额外配置（可空）
+[functions.debug]
+fs = []
+
+# 间接调用忽略列表（可空）
+[files.icall-ignore-list-fileloc]
+fs = []
+
+[files.icall-ignore-list-linenum]
+fs = []
+
+# 数据库配置（禁用但保留结构）
+[databases]
+
+[databases.mysql]
+host = ""
+port = ""
+username = ""
+password = ""
+dbname = ""
+
+[logging]
+file = "logs/analysis.log"
+level = "DEBUG"
