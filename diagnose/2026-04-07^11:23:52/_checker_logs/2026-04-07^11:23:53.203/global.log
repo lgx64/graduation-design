@@ -1,8 +1,0 @@
-[2026-04-07 11:23:53.217] [global_2026-04-07^11:23:53.203_15347] [info] Total 1 files and 1 are loaded
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Academic checker finished. Total bugs: 0
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass BufferOverflow: 0 ms
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass DoubleFree: 0 ms
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass IntegerOverflow: 0 ms
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass NullPointerDeref: 0 ms
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass UseAfterFree: 0 ms
-[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.203/Bug_Report.txt
