@@ -1,0 +1,11 @@
+=========== Academic Checker Report ===========
+Total bugs: 1
+
+Pass timings (ms):
+  - BufferOverflow: 0
+  - DoubleFree: 0
+  - IntegerOverflow: 0
+  - NullPointerDeref: 0
+  - UseAfterFree: 0
+
+[BufferOverflow] Function=complex_bug_buffer | Loc=inputfile/complex_bug_buffer.c:13 | String copy may exceed destination object (14 > 8). Inst=  %13 = call i8* @strcpy(i8* noundef %12, i8* noundef getelementptr inbounds ([13 x i8], [13 x i8]* @.str, i64 0, i64 0)) #5, !dbg !37

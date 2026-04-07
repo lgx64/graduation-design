@@ -1,0 +1,19 @@
+=========== Academic Checker Report ===========
+Total bugs: 9
+
+Pass timings (ms):
+  - BufferOverflow: 0
+  - DoubleFree: 0
+  - IntegerOverflow: 0
+  - NullPointerDeref: 0
+  - UseAfterFree: 0
+
+[NullPointerDeref] Function=null_deref_case | Loc=inputfile/test_simplechecker.c:7 | Path-sensitive symbolic execution found possible null dereference. Inst=  store i32 1, i32* null, align 4, !dbg !22
+[UseAfterFree] Function=slot_based_case | Loc=inputfile/test_simplechecker.c:25 | Use of previously freed pointer. Inst=  %13 = load i32**, i32*** %2, align 8, !dbg !39
+[UseAfterFree] Function=slot_based_case | Loc=inputfile/test_simplechecker.c:28 | Use of previously freed pointer. Inst=  %17 = load i32**, i32*** %2, align 8, !dbg !43
+[UseAfterFree] Function=uaf_case | Loc=inputfile/test_simplechecker.c:37 | Use of previously freed pointer. Inst=  %11 = load i32*, i32** %1, align 8, !dbg !35
+[UseAfterFree] Function=double_free_case | Loc=inputfile/test_simplechecker.c:45 | Use of previously freed pointer. Inst=  %10 = load i32*, i32** %1, align 8, !dbg !33
+[DoubleFree] Function=slot_based_case | Loc=inputfile/test_simplechecker.c:28 | Pointer freed more than once. Inst=  call void @free(i8* noundef %19) #6, !dbg !45
+[DoubleFree] Function=double_free_case | Loc=inputfile/test_simplechecker.c:45 | Pointer freed more than once. Inst=  call void @free(i8* noundef %11) #6, !dbg !34
+[IntegerOverflow] Function=integer_overflow_case | Loc=inputfile/test_simplechecker.c:53 | Potential integer overflow impacting size/index. Inst=  %14 = mul i64 %12, %13, !dbg !38
+[BufferOverflow] Function=buffer_overflow_case | Loc=inputfile/test_simplechecker.c:61 | Copy/set size exceeds destination object (16 > 8). Inst=  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 1 %4, i8* align 16 %5, i64 16, i1 false), !dbg !32

@@ -1,0 +1,364 @@
+Batch diagnose started at 2026-04-07T11:23:52.470027
+Checker log root: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs
+
+================================================================================
+[FILE] complex_bug_buffer.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/complex_bug_buffer.c:13:5: warning: 'strcpy' will always overflow; destination buffer has size 8, but the source string has length 13 (including NUL byte) [-Wfortify-source]
+    strcpy(small, "0123456789AB");
+    ^
+1 warning generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.592] [global_2026-04-07^11:23:52.548_15098] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Academic checker finished. Total bugs: 1
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Pass BufferOverflow: 4 ms
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.606] [global_2026-04-07^11:23:52.548_15098] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.547/Bug_Report.txt
+
+[RESULT] done: complex_bug_buffer.c, report=Bug_Report_complex_bug_buffer.txt
+
+================================================================================
+[FILE] complex_bug_chain_uaf_df.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.680] [global_2026-04-07^11:23:52.670_15119] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Academic checker finished. Total bugs: 5
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.681] [global_2026-04-07^11:23:52.670_15119] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.670/Bug_Report.txt
+
+[RESULT] done: complex_bug_chain_uaf_df.c, report=Bug_Report_complex_bug_chain_uaf_df.txt
+
+================================================================================
+[FILE] complex_bug_integer.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.728] [global_2026-04-07^11:23:52.723_15138] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Academic checker finished. Total bugs: 1
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.729] [global_2026-04-07^11:23:52.723_15138] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.722/Bug_Report.txt
+
+[RESULT] done: complex_bug_integer.c, report=Bug_Report_complex_bug_integer.txt
+
+================================================================================
+[FILE] complex_bug_null.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/complex_bug_null.c:8:29: warning: null passed to a callee that requires a non-null argument [-Wnonnull]
+    memcpy((char *)0, src, 4);
+           ~~~~~~~~~        ^
+1 warning generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Academic checker finished. Total bugs: 1
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.765] [global_2026-04-07^11:23:52.759_15157] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.759/Bug_Report.txt
+
+[RESULT] done: complex_bug_null.c, report=Bug_Report_complex_bug_null.txt
+
+================================================================================
+[FILE] complex_safe_memory_1.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.803] [global_2026-04-07^11:23:52.795_15176] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.804] [global_2026-04-07^11:23:52.795_15176] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.794/Bug_Report.txt
+
+[RESULT] done: complex_safe_memory_1.c, report=Bug_Report_complex_safe_memory_1.txt
+
+================================================================================
+[FILE] complex_safe_memory_2.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.839] [global_2026-04-07^11:23:52.834_15195] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.846] [global_2026-04-07^11:23:52.834_15195] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.834/Bug_Report.txt
+
+[RESULT] done: complex_safe_memory_2.c, report=Bug_Report_complex_safe_memory_2.txt
+
+================================================================================
+[FILE] cross_file_bug_entry.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.886] [global_2026-04-07^11:23:52.879_15214] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Academic checker finished. Total bugs: 5
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.889] [global_2026-04-07^11:23:52.879_15214] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.879/Bug_Report.txt
+
+[RESULT] done: cross_file_bug_entry.c, report=Bug_Report_cross_file_bug_entry.txt
+
+================================================================================
+[FILE] cross_file_safe_entry.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.925] [global_2026-04-07^11:23:52.918_15233] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.930] [global_2026-04-07^11:23:52.918_15233] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.918/Bug_Report.txt
+
+[RESULT] done: cross_file_safe_entry.c, report=Bug_Report_cross_file_safe_entry.txt
+
+================================================================================
+[FILE] showcase/bo_alias_field_bug.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.961] [global_2026-04-07^11:23:52.956_15252] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Academic checker finished. Total bugs: 2
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.962] [global_2026-04-07^11:23:52.956_15252] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.955/Bug_Report.txt
+
+[RESULT] done: showcase/bo_alias_field_bug.c, report=Bug_Report_showcase__bo_alias_field_bug.txt
+
+================================================================================
+[FILE] showcase/bo_context_bug.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:52.994] [global_2026-04-07^11:23:52.988_15271] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Academic checker finished. Total bugs: 2
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:52.995] [global_2026-04-07^11:23:52.988_15271] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:52.988/Bug_Report.txt
+
+[RESULT] done: showcase/bo_context_bug.c, report=Bug_Report_showcase__bo_context_bug.txt
+
+================================================================================
+[FILE] showcase/bo_context_safe.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.034] [global_2026-04-07^11:23:53.026_15290] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.036] [global_2026-04-07^11:23:53.026_15290] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.026/Bug_Report.txt
+
+[RESULT] done: showcase/bo_context_safe.c, report=Bug_Report_showcase__bo_context_safe.txt
+
+================================================================================
+[FILE] showcase/npd_call_bug.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/showcase/npd_call_bug.c:6:29: warning: null passed to a callee that requires a non-null argument [-Wnonnull]
+    memcpy((char *)0, src, 4);
+           ~~~~~~~~~        ^
+1 warning generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.073] [global_2026-04-07^11:23:53.064_15309] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Academic checker finished. Total bugs: 1
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.074] [global_2026-04-07^11:23:53.064_15309] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.064/Bug_Report.txt
+
+[RESULT] done: showcase/npd_call_bug.c, report=Bug_Report_showcase__npd_call_bug.txt
+
+================================================================================
+[FILE] showcase/npd_call_safe.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.131] [global_2026-04-07^11:23:53.119_15328] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.118/Bug_Report.txt
+
+[RESULT] done: showcase/npd_call_safe.c, report=Bug_Report_showcase__npd_call_safe.txt
+
+================================================================================
+[FILE] showcase/npd_path_bug.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.217] [global_2026-04-07^11:23:53.203_15347] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.219] [global_2026-04-07^11:23:53.203_15347] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.203/Bug_Report.txt
+
+[RESULT] done: showcase/npd_path_bug.c, report=Bug_Report_showcase__npd_path_bug.txt
+
+================================================================================
+[FILE] showcase/npd_path_safe.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.298] [global_2026-04-07^11:23:53.285_15366] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Academic checker finished. Total bugs: 0
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.301] [global_2026-04-07^11:23:53.285_15366] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.285/Bug_Report.txt
+
+[RESULT] done: showcase/npd_path_safe.c, report=Bug_Report_showcase__npd_path_safe.txt
+
+================================================================================
+[FILE] showcase_cross_bug_entry.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Academic checker finished. Total bugs: 7
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.376] [global_2026-04-07^11:23:53.366_15385] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.366/Bug_Report.txt
+
+[RESULT] done: showcase_cross_bug_entry.c, report=Bug_Report_showcase_cross_bug_entry.txt
+
+================================================================================
+[FILE] showcase_cross_safe_entry.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.419] [global_2026-04-07^11:23:53.412_15407] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Academic checker finished. Total bugs: 1
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.423] [global_2026-04-07^11:23:53.412_15407] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.411/Bug_Report.txt
+
+[RESULT] done: showcase_cross_safe_entry.c, report=Bug_Report_showcase_cross_safe_entry.txt
+
+================================================================================
+[FILE] test_simplechecker.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/test_simplechecker.c:7:5: warning: indirection of non-volatile null pointer will be deleted, not trap [-Wnull-dereference]
+    *(int *)0 = 1;
+    ^~~~~~~~~
+/home/dragon/桌面/IMMI-project-main/inputfile/test_simplechecker.c:7:5: note: consider using __builtin_trap() or qualifying pointer with 'volatile'
+/home/dragon/桌面/IMMI-project-main/inputfile/test_simplechecker.c:61:5: warning: 'memcpy' will always overflow; destination buffer has size 8, but size argument is 16 [-Wfortify-source]
+    memcpy(dst, src, 16);
+    ^
+2 warnings generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Total 1 files and 1 are loaded
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Academic checker finished. Total bugs: 9
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Pass BufferOverflow: 0 ms
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Pass DoubleFree: 0 ms
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Pass IntegerOverflow: 0 ms
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Pass NullPointerDeref: 0 ms
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Pass UseAfterFree: 0 ms
+[2026-04-07 11:23:53.471] [global_2026-04-07^11:23:53.463_15432] [info] Bug report written to: /home/dragon/桌面/IMMI-project-main/diagnose/2026-04-07^11:23:52/_checker_logs/2026-04-07^11:23:53.462/Bug_Report.txt
+
+[RESULT] done: test_simplechecker.c, report=Bug_Report_test_simplechecker.txt

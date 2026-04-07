@@ -1,0 +1,476 @@
+Batch diagnose started at 2026-03-08T18:20:35.767982
+
+================================================================================
+[FILE] complex_bug_buffer.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/complex_bug_buffer.c:13:5: warning: 'strcpy' will always overflow; destination buffer has size 8, but the source string has length 13 (including NUL byte) [-Wfortify-source]
+    strcpy(small, "0123456789AB");
+    ^
+1 warning generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: complex_bug_buffer.c, report=Bug_Report_complex_bug_buffer.txt
+
+================================================================================
+[FILE] complex_bug_chain_uaf_df.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: complex_bug_chain_uaf_df.c, report=Bug_Report_complex_bug_chain_uaf_df.txt
+
+================================================================================
+[FILE] complex_bug_integer.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: complex_bug_integer.c, report=Bug_Report_complex_bug_integer.txt
+
+================================================================================
+[FILE] complex_bug_null.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/complex_bug_null.c:8:29: warning: null passed to a callee that requires a non-null argument [-Wnonnull]
+    memcpy((char *)0, src, 4);
+           ~~~~~~~~~        ^
+1 warning generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.265] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.266] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.266] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: complex_bug_null.c, report=Bug_Report_complex_bug_null.txt
+
+================================================================================
+[FILE] complex_safe_memory_1.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.265] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.266] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.266] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.312] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.312] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.312] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: complex_safe_memory_1.c, report=Bug_Report_complex_safe_memory_1.txt
+
+================================================================================
+[FILE] complex_safe_memory_2.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.265] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.266] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.266] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.312] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.312] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.312] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.355] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.360] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.360] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: complex_safe_memory_2.c, report=Bug_Report_complex_safe_memory_2.txt
+
+================================================================================
+[FILE] cross_file_bug_entry.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.265] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.266] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.266] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.312] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.312] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.312] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.355] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.360] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.360] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.401] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.401] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.401] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: cross_file_bug_entry.c, report=Bug_Report_cross_file_bug_entry.txt
+
+================================================================================
+[FILE] cross_file_safe_entry.c
+[CLANG]
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.265] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.266] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.266] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.312] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.312] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.312] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.355] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.360] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.360] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.401] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.401] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.401] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.456] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.457] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.457] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: cross_file_safe_entry.c, report=Bug_Report_cross_file_safe_entry.txt
+
+================================================================================
+[FILE] test_simplechecker.c
+[CLANG]
+/home/dragon/桌面/IMMI-project-main/inputfile/test_simplechecker.c:7:5: warning: indirection of non-volatile null pointer will be deleted, not trap [-Wnull-dereference]
+    *(int *)0 = 1;
+    ^~~~~~~~~
+/home/dragon/桌面/IMMI-project-main/inputfile/test_simplechecker.c:7:5: note: consider using __builtin_trap() or qualifying pointer with 'volatile'
+/home/dragon/桌面/IMMI-project-main/inputfile/test_simplechecker.c:61:5: warning: 'memcpy' will always overflow; destination buffer has size 8, but size argument is 16 [-Wfortify-source]
+    memcpy(dst, src, 16);
+    ^
+2 warnings generated.
+
+[CHECKER STDOUT/STDERR]
+Openmp enabled
+
+[CHECKER GLOBAL LOG]
+[2026-03-08 18:20:36.120] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.133] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.133] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.133] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.182] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.187] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.187] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.187] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.224] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.224] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.224] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.224] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.265] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.266] [global] [info] Academic checker finished. Total bugs: 1
+[2026-03-08 18:20:36.266] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.266] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.312] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.312] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.312] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.312] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.355] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.360] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.360] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.360] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.401] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.401] [global] [info] Academic checker finished. Total bugs: 5
+[2026-03-08 18:20:36.401] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.401] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.456] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.457] [global] [info] Academic checker finished. Total bugs: 0
+[2026-03-08 18:20:36.457] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.457] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+[2026-03-08 18:20:36.564] [global] [info] Total 1 files and 1 are loaded
+[2026-03-08 18:20:36.565] [global] [info] Academic checker finished. Total bugs: 9
+[2026-03-08 18:20:36.565] [global] [info] Pass BufferOverflow: 0 ms
+[2026-03-08 18:20:36.565] [global] [info] Pass DoubleFree: 0 ms
+[2026-03-08 18:20:36.565] [global] [info] Pass IntegerOverflow: 0 ms
+[2026-03-08 18:20:36.565] [global] [info] Pass NullPointerDeref: 0 ms
+[2026-03-08 18:20:36.565] [global] [info] Pass UseAfterFree: 0 ms
+[2026-03-08 18:20:36.565] [global] [info] Bug report written to: analyzer/logs/2026-03-08^18:20:36/Bug_Report.txt
+
+[RESULT] done: test_simplechecker.c, report=Bug_Report_test_simplechecker.txt

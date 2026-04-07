@@ -1,0 +1,11 @@
+=========== Bug Report ===========
+Total bugs: 1
+
+Pass timings (ms):
+  - BufferOverflow: 0
+  - DoubleFree: 0
+  - IntegerOverflow: 0
+  - NullPointerDeref: 0
+  - UseAfterFree: 0
+
+[NullPointerDeref] Function=npd_call_bug | Loc=inputfile/showcase/npd_call_bug.c:6 | Path-sensitive symbolic execution found possible null call argument (arg0). Inst=  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 1 null, i8* align 1 %3, i64 4, i1 false), !dbg !21

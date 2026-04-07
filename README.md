@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # graduation-design 项目使用指南（新环境从零上手）
 
 本项目是一个基于 LLVM 的 C 代码静态分析器，当前支持检测：
@@ -213,3 +214,7 @@ python3 webapp.py
 ```
 
 然后访问：`http://127.0.0.1:8000`
+=======
+# graduation-design
+My first static analyzer based on LLVM
+>>>>>>> b6f4abd0834dc7ad11df7e9cc31dba6ff4820bd3

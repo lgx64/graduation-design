@@ -1,0 +1,12 @@
+=========== Bug Report ===========
+Total bugs: 2
+
+Pass timings (ms):
+  - BufferOverflow: 0
+  - DoubleFree: 0
+  - IntegerOverflow: 0
+  - NullPointerDeref: 0
+  - UseAfterFree: 0
+
+[BufferOverflow] Function=bo_alias_field_bug | Loc=inputfile/showcase/bo_alias_field_bug.c:19 | Context-sensitive wrapper copy may exceed destination object (20 > 8). Inst=  call void @fill20(i8* noundef %9, i8* noundef %10), !dbg !43
+[BufferOverflow] Function=fill20 | Loc=inputfile/showcase/bo_alias_field_bug.c:9 | Copy/set size exceeds destination object (20 > 8). Inst=  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 1 %5, i8* align 1 %6, i64 20, i1 false), !dbg !23

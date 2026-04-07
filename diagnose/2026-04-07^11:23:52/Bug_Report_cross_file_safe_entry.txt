@@ -1,0 +1,10 @@
+=========== Bug Report ===========
+Total bugs: 0
+
+Pass timings (ms):
+  - BufferOverflow: 0
+  - DoubleFree: 0
+  - IntegerOverflow: 0
+  - NullPointerDeref: 0
+  - UseAfterFree: 0
+
