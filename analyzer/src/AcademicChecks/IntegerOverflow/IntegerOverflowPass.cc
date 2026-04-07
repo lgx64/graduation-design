@@ -72,6 +72,16 @@ void IntegerOverflowPass::run(ModuleMap &modules, std::vector<BugRecord> &out) {
                     continue;
                 }
 
+                if (op == Instruction::Mul) {
+                    auto *C0 = dyn_cast<ConstantInt>(BO->getOperand(0));
+                    auto *C1 = dyn_cast<ConstantInt>(BO->getOperand(1));
+                    // 常见的 sizeof(T) * n 分配模式：小常量因子乘法，误报率较高，先保守跳过。
+                    if ((C0 && C0->getZExtValue() <= 1024) ||
+                        (C1 && C1->getZExtValue() <= 1024)) {
+                        continue;
+                    }
+                }
+
                 if (isa<ConstantInt>(BO->getOperand(0)) && isa<ConstantInt>(BO->getOperand(1))) {
                     continue;
                 }
