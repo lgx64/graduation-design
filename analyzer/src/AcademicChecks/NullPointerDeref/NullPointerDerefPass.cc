@@ -198,7 +198,6 @@ static void processInstructionForState(Instruction &I, Env &env) {//状态转移
         if (LI->getType()->isPointerTy()) {
             Value *slot = stripPtr(LI->getPointerOperand());
             NullState s = envGet(env, slot);
-            if (s == NullState::Unknown) s = evalPtrState(LI->getPointerOperand(), env);
             envSet(env, LI, s);
         }
         return;
