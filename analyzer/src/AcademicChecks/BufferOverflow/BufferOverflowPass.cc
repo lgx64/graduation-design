@@ -1,4 +1,5 @@
 #include "BufferOverflowPass.h"
+#include <limits>
 #include <unordered_set>
 
 std::string BufferOverflowPass::name() const {
@@ -14,6 +15,7 @@ struct CopyEffect {//跨函数拷贝摘要的一条记录，记录函数对目�
 };
 
 using CopySummary = std::vector<CopyEffect>;//复制摘要
+constexpr uint64_t kUnboundedWriteBytes = std::numeric_limits<uint64_t>::max();
 
 static bool isHeapAllocCallName(const std::string &callee) {
     return callee == "malloc" || callee == "calloc" || callee == "realloc" ||
@@ -90,6 +92,8 @@ static uint64_t knownGlobalObjSize(GlobalVariable *GV, const DataLayout &DL) {//
     if (!GV || !GV->hasInitializer()) return 0;
     Type *ty = GV->getValueType();
     if (!ty || !ty->isSized()) return 0;
+    // 纯指针全局（如 Record* head）通常是“指针槽位”而非真实缓冲区对象，跳过可减少 object=8 误报。
+    if (ty->isPointerTy()) return 0;
     return DL.getTypeAllocSize(ty);
 }
 
@@ -121,6 +125,10 @@ static bool isMemOpCall(const std::string &callee) {//是否是内存操作函�
             callee.find("llvm.memset") == 0);
 }
 
+static bool isUnboundedInputCall(const std::string &callee) {
+    return callee == "gets";
+}
+
 static uint64_t accessBytesByInstruction(Instruction *I) {//估算一条内存访问指令实际读/写了多少字节
     if (auto *LI = dyn_cast<LoadInst>(I)) {
         Type *ty = LI->getType();
@@ -131,6 +139,14 @@ static uint64_t accessBytesByInstruction(Instruction *I) {//估算一条内存�
         return ty && ty->isSized() ? SI->getModule()->getDataLayout().getTypeStoreSize(ty) : 0;
     }
     return 0;
+}
+
+static uint64_t typedObjectLowerBoundForGEP(GetElementPtrInst *GEP,
+                                            const DataLayout &DL) {
+    if (!GEP) return 0;
+    Type *srcElem = GEP->getSourceElementType();
+    if (!srcElem || !srcElem->isSized()) return 0;
+    return DL.getTypeAllocSize(srcElem);
 }
 
 static int pointerArgIndex(Value *V,
@@ -186,6 +202,22 @@ static CopySummary collectOneSummary(Function &F,
             auto *n = dyn_cast<ConstantInt>(CI->getArgOperand(2));
             if (!n) continue;
             CopyEffect e{static_cast<unsigned>(idx), n->getZExtValue(), "direct-strncpy"};
+            if (dedup.insert(effectKey(e)).second) out.push_back(e);
+            continue;
+        }
+
+        if (callee == "unsafe_strcpy" && CI->arg_size() >= 2) {
+            int idx = pointerArgIndex(CI->getArgOperand(0), uf, argRootToIdx);
+            if (idx < 0) continue;
+            CopyEffect e{static_cast<unsigned>(idx), kUnboundedWriteBytes, "direct-unsafe-strcpy"};
+            if (dedup.insert(effectKey(e)).second) out.push_back(e);
+            continue;
+        }
+
+        if (callee == "unsafe_read_input" && CI->arg_size() >= 1) {
+            int idx = pointerArgIndex(CI->getArgOperand(0), uf, argRootToIdx);
+            if (idx < 0) continue;
+            CopyEffect e{static_cast<unsigned>(idx), kUnboundedWriteBytes, "direct-unsafe-read"};
             if (dedup.insert(effectKey(e)).second) out.push_back(e);
             continue;
         }
@@ -559,6 +591,8 @@ static void detectIndexedAccessOverflows(Function &F,
         if (!bp) continue;
 
         uint64_t objSize = allocBytes[bp];
+        uint64_t typedLB = typedObjectLowerBoundForGEP(GEP, DL);
+        if (typedLB > objSize) objSize = typedLB;
         uint64_t off = constByteOffsetFromBase(GEP, DL);
         uint64_t acc = accessBytesByInstruction(&I);
         if (!acc) continue;
@@ -597,6 +631,15 @@ static void detectContextSummaryOverflows(Function &F,
 
             uint64_t dstSize = allocBytes[bp];
             uint64_t off = constByteOffsetFromBase(dst, DL);
+            if (eff.bytes == kUnboundedWriteBytes) {
+                std::string key = F.getName().str() + "|" + locToString(CI) + "|BO_CTX_UNBOUNDED|" +
+                                  std::to_string(eff.dstArg);
+                if (!dedup.insert(key).second) continue;
+                addBug(out, "BufferOverflow", &F, CI,
+                       "Context-sensitive unbounded write into destination object (size " +
+                           std::to_string(dstSize) + "). Inst=" + instToString(CI));
+                continue;
+            }
             if (off >= dstSize) {
                 std::string key = F.getName().str() + "|" + locToString(CI) + "|BO_CTX_OUT_OF_BOUNDS|" +
                                   std::to_string(eff.dstArg) + "|" + std::to_string(eff.bytes);
@@ -622,6 +665,35 @@ static void detectContextSummaryOverflows(Function &F,
     }
 }
 
+static void detectUnboundedInputOverflows(Function &F,
+                                          const DataLayout &DL,
+                                          PointerSlotUF &uf,
+                                          std::map<Value *, std::set<Value *>> &rootBases,
+                                          std::map<Value *, uint64_t> &allocBytes,
+                                          std::set<std::string> &dedup,
+                                          std::vector<BugRecord> &out) {
+    for (Instruction &I : instructions(&F)) {
+        auto *CI = dyn_cast<CallInst>(&I);
+        if (!CI || CI->arg_size() < 1) continue;
+        std::string callee = getCalledFuncName(CI).str();
+        if (!isUnboundedInputCall(callee)) continue;
+
+        Value *dst = stripPtr(CI->getArgOperand(0));
+        Value *bp = findSizedAliasBase(dst, uf, rootBases, allocBytes);
+        if (!bp) continue;
+
+        uint64_t dstSize = allocBytes[bp];
+        uint64_t off = constByteOffsetFromBase(dst, DL);
+        if (off >= dstSize) continue;
+
+        std::string key = F.getName().str() + "|" + locToString(CI) + "|BO_UNBOUNDED_INPUT";
+        if (!dedup.insert(key).second) continue;
+        addBug(out, "BufferOverflow", &F, CI,
+               "Unbounded input API may overflow destination object (size " +
+                   std::to_string(dstSize - off) + "). Inst=" + instToString(CI));
+    }
+}
+
 static void analyzeOneFunction(Function &F,
                                Module *M,//Module对象表示一个LLVM IR模块，包含了函数、全局变量和其他IR元素
                                const DataLayout &DL,//datalayout提供了目标平台的数据类型大小和对齐信息
@@ -639,6 +711,7 @@ static void analyzeOneFunction(Function &F,
     detectMemOpOverflows(F, DL, uf, rootBases, allocBytes, dedup, out);
     detectStringOpOverflows(F, DL, uf, rootBases, allocBytes, dedup, out);
     detectIndexedAccessOverflows(F, DL, uf, rootBases, allocBytes, dedup, out);
+    detectUnboundedInputOverflows(F, DL, uf, rootBases, allocBytes, dedup, out);
     detectContextSummaryOverflows(F, DL, uf, rootBases, allocBytes, interprocSummary, dedup, out);
 }
 
