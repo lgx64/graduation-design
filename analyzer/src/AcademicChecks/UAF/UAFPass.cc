@@ -8,10 +8,61 @@ std::string UAFPass::name() const {
 
 namespace {//namespace用于限定函数作用域，避免与其他文件中的同名函数冲突
 
+enum class FreeState {
+    NotFreed = 0,
+    MaybeFreed = 1,
+    Freed = 2,
+};
+
+using FreeEnv = std::map<Value *, FreeState>;
+
+static FreeState joinFreeState(FreeState a, FreeState b) {
+    if (a == b) return a;
+    if (a == FreeState::NotFreed && b == FreeState::NotFreed) return FreeState::NotFreed;
+    if (a == FreeState::Freed && b == FreeState::Freed) return FreeState::Freed;
+    return FreeState::MaybeFreed;
+}
+
+static FreeState envGet(const FreeEnv &env, Value *r) {
+    auto it = env.find(r);
+    if (it == env.end()) return FreeState::NotFreed;
+    return it->second;
+}
+
+static void envSet(FreeEnv &env, Value *r, FreeState s) {
+    if (!r) return;
+    env[r] = s;
+}
+
+static bool mergeEnv(FreeEnv &dst, const FreeEnv &src) {
+    bool changed = false;
+    for (const auto &kv : src) {
+        Value *k = kv.first;
+        FreeState oldS = envGet(dst, k);
+        FreeState newS = joinFreeState(oldS, kv.second);
+        if (newS != oldS) {
+            dst[k] = newS;
+            changed = true;
+        }
+    }
+    return changed;
+}
+
 struct FuncUAFSummary {//函数摘要
     std::set<unsigned> freedArgs;//freedArgs表示函数中被释放的指针参数的索引集合
+    std::set<unsigned> mustFreedArgs;//mustFreedArgs表示函数中在所有路径上都会释放的指针参数索引集合（保守近似）
     std::set<unsigned> usedArgs;//usedArgs表示函数中被使用的指针参数的索引集合
 };
+
+static bool hasConditionalBranch(Function &F) {
+    for (BasicBlock &BB : F) {
+        if (auto *BI = dyn_cast<BranchInst>(BB.getTerminator())) {
+            if (BI->isConditional()) return true;
+        }
+        if (isa<SwitchInst>(BB.getTerminator())) return true;
+    }
+    return false;
+}
 
 static void collectOneFunctionSummary(Function &F,
                                       const std::set<std::string> &freeFuncs,
@@ -76,6 +127,10 @@ static void collectOneFunctionSummary(Function &F,
             continue;
         }
     }
+
+    if (!hasConditionalBranch(F)) {
+        out.mustFreedArgs = out.freedArgs;
+    }
 }
 
 static std::map<Function *, FuncUAFSummary>
@@ -95,7 +150,9 @@ buildInterprocSummary(ModuleMap &modules, const std::set<std::string> &freeFuncs
             Function *F = it.first;
             FuncUAFSummary now;
             collectOneFunctionSummary(*F, freeFuncs, old, now);
-            if (now.freedArgs != it.second.freedArgs || now.usedArgs != it.second.usedArgs) {
+            if (now.freedArgs != it.second.freedArgs ||
+                now.mustFreedArgs != it.second.mustFreedArgs ||
+                now.usedArgs != it.second.usedArgs) {
                 it.second = std::move(now);
                 changed = true;
             }
@@ -109,11 +166,11 @@ buildInterprocSummary(ModuleMap &modules, const std::set<std::string> &freeFuncs
 
 static void handleStoreInvalidate(Instruction &I,
                                   PointerSlotUF &uf,
-                                  std::set<Value *> &freed) {
+                                  FreeEnv &env) {
     auto *SI = dyn_cast<StoreInst>(&I);
     if (!SI) return;
     Value *slotRoot = finalPtrSlot(SI->getPointerOperand(), uf);
-    if (slotRoot) freed.erase(slotRoot);
+    if (slotRoot) envSet(env, slotRoot, FreeState::NotFreed);
 }
 
 static void handleCallEffects(Function &F,
@@ -121,8 +178,7 @@ static void handleCallEffects(Function &F,
                               PointerSlotUF &uf,
                               const std::set<std::string> &freeFuncs,
                               const std::map<Function *, FuncUAFSummary> &summary,
-                              std::set<Value *> &freed,
-                              std::set<Value *> &freedByThisInst,
+                              FreeEnv &env,
                               std::set<std::string> &dedup,
                               std::vector<BugRecord> &out) {
     auto *CI = dyn_cast<CallInst>(&I);
@@ -131,10 +187,7 @@ static void handleCallEffects(Function &F,
     std::string callee = getCalledFuncName(CI).str();
     if (freeFuncs.count(callee) && CI->arg_size() >= 1) {
         Value *arg0 = finalPtrSlot(CI->getArgOperand(0), uf);
-        if (arg0) {
-            freed.insert(arg0);
-            freedByThisInst.insert(arg0);
-        }
+        if (arg0) envSet(env, arg0, FreeState::Freed);
         return;
     }
 
@@ -146,16 +199,21 @@ static void handleCallEffects(Function &F,
     for (unsigned ai : sit->second.freedArgs) {
         if (ai >= CI->arg_size()) continue;
         Value *r = finalPtrSlot(CI->getArgOperand(ai), uf);
-        if (r) {
-            freed.insert(r);
-            freedByThisInst.insert(r);
+        if (!r) continue;
+        bool isMust = sit->second.mustFreedArgs.count(ai) > 0;
+        if (isMust) {
+            envSet(env, r, FreeState::Freed);
+        } else {
+            FreeState oldS = envGet(env, r);
+            if (oldS == FreeState::Freed) envSet(env, r, FreeState::Freed);
+            else envSet(env, r, FreeState::MaybeFreed);
         }
     }
 
     for (unsigned ai : sit->second.usedArgs) {
         if (ai >= CI->arg_size()) continue;
         Value *r = finalPtrSlot(CI->getArgOperand(ai), uf);
-        if (!r || !freed.count(r)) continue;//如果被调用函数摘要中的usedArgs集合中的参数索引ai超出当前调用指令的参数数量，或者该参数对应的指针参数r不在freed集合中，则跳过
+        if (!r || envGet(env, r) != FreeState::Freed) continue;//仅在“必然已释放”时报告，避免冲突路径误报
 
         std::string key = F.getName().str() + "|" + locToString(CI) + "|UAF_CALL|" + std::to_string(ai);
         if (!dedup.insert(key).second) continue;
@@ -170,14 +228,12 @@ static void detectOperandUAF(Function &F,
                              Instruction &I,
                              PointerSlotUF &uf,
                              const std::set<std::string> &freeFuncs,
-                             const std::set<Value *> &freed,
-                             const std::set<Value *> &freedByThisInst,
+                             const FreeEnv &env,
                              std::set<std::string> &dedup,
                              std::vector<BugRecord> &out) {
     for (Use &U : I.operands()) {
         Value *op = finalPtrSlot(U.get(), uf);
-        if (!op || !freed.count(op)) continue;
-        if (freedByThisInst.count(op)) continue;
+        if (!op || envGet(env, op) != FreeState::Freed) continue;
 
         if (auto *CI = dyn_cast<CallInst>(&I)) {
             std::string callee = getCalledFuncName(CI).str();
@@ -198,13 +254,50 @@ static void analyzeOneFunction(Function &F,
                                std::set<std::string> &dedup,
                                std::vector<BugRecord> &out) {
     PointerSlotUF uf = buildPointerSlotUF(F);
-    std::set<Value *> freed;//已释放的指针集合
+    std::map<BasicBlock *, FreeEnv> inEnv;
+    std::set<BasicBlock *> inited;
+    std::deque<BasicBlock *> q;
 
-    for (Instruction &I : instructions(&F)) {
-        std::set<Value *> freedByThisInst;
-        handleStoreInvalidate(I, uf, freed);
-        handleCallEffects(F, I, uf, freeFuncs, summary, freed, freedByThisInst, dedup, out);
-        detectOperandUAF(F, I, uf, freeFuncs, freed, freedByThisInst, dedup, out);
+    BasicBlock *entry = &F.getEntryBlock();
+    inEnv[entry] = FreeEnv();
+    inited.insert(entry);
+    q.push_back(entry);
+
+    while (!q.empty()) {
+        BasicBlock *BB = q.front();
+        q.pop_front();
+        FreeEnv env = inEnv[BB];
+
+        for (Instruction &I : *BB) {
+            handleStoreInvalidate(I, uf, env);
+
+            auto *CI = dyn_cast<CallInst>(&I);
+            bool isDirectFree = false;
+            if (CI) {
+                std::string callee = getCalledFuncName(CI).str();
+                isDirectFree = freeFuncs.count(callee) && CI->arg_size() >= 1;
+            }
+
+            if (!isDirectFree) {
+                detectOperandUAF(F, I, uf, freeFuncs, env, dedup, out);
+            }
+
+            handleCallEffects(F, I, uf, freeFuncs, summary, env, dedup, out);
+        }
+
+        Instruction *T = BB->getTerminator();
+        for (unsigned i = 0; i < T->getNumSuccessors(); ++i) {
+            BasicBlock *S = T->getSuccessor(i);
+            if (!inited.count(S)) {
+                inEnv[S] = env;
+                inited.insert(S);
+                q.push_back(S);
+                continue;
+            }
+            if (mergeEnv(inEnv[S], env)) {
+                q.push_back(S);
+            }
+        }
     }
 }
 
