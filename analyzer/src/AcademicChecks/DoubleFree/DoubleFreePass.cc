@@ -8,9 +8,60 @@ std::string DoubleFreePass::name() const {
 
 namespace {
 
+enum class FreeState {
+    NotFreed = 0,
+    MaybeFreed = 1,
+    Freed = 2,
+};
+
+using FreeEnv = std::map<Value *, FreeState>;
+
+static FreeState joinFreeState(FreeState a, FreeState b) {
+    if (a == b) return a;
+    if (a == FreeState::NotFreed && b == FreeState::NotFreed) return FreeState::NotFreed;
+    if (a == FreeState::Freed && b == FreeState::Freed) return FreeState::Freed;
+    return FreeState::MaybeFreed;
+}
+
+static FreeState envGet(const FreeEnv &env, Value *r) {
+    auto it = env.find(r);
+    if (it == env.end()) return FreeState::NotFreed;
+    return it->second;
+}
+
+static void envSet(FreeEnv &env, Value *r, FreeState s) {
+    if (!r) return;
+    env[r] = s;
+}
+
+static bool mergeEnv(FreeEnv &dst, const FreeEnv &src) {
+    bool changed = false;
+    for (const auto &kv : src) {
+        Value *k = kv.first;
+        FreeState oldS = envGet(dst, k);
+        FreeState newS = joinFreeState(oldS, kv.second);
+        if (newS != oldS) {
+            dst[k] = newS;
+            changed = true;
+        }
+    }
+    return changed;
+}
+
 struct FuncDFSummary {//跨函数摘要
     std::set<unsigned> freedArgs;
+    std::set<unsigned> mustFreedArgs;
 };
+
+static bool hasConditionalBranch(Function &F) {
+    for (BasicBlock &BB : F) {
+        if (auto *BI = dyn_cast<BranchInst>(BB.getTerminator())) {
+            if (BI->isConditional()) return true;
+        }
+        if (isa<SwitchInst>(BB.getTerminator())) return true;
+    }
+    return false;
+}
 
 static void collectOneFunctionSummary(Function &F,//要收集摘要信息的函数对象
                                       const std::set<std::string> &freeFuncs,//表示直接释放指针的函数名称集合
@@ -42,6 +93,10 @@ static void collectOneFunctionSummary(Function &F,//要收集摘要信息的函�
             }
         }
     }
+
+    if (!hasConditionalBranch(F)) {
+        out.mustFreedArgs = out.freedArgs;
+    }
 }
 
 static std::map<Function *, FuncDFSummary>
@@ -61,7 +116,8 @@ buildInterprocSummary(ModuleMap &modules, const std::set<std::string> &freeFuncs
             Function *F = it.first;
             FuncDFSummary now;
             collectOneFunctionSummary(*F, freeFuncs, old, now);
-            if (now.freedArgs != it.second.freedArgs) {
+            if (now.freedArgs != it.second.freedArgs ||
+                now.mustFreedArgs != it.second.mustFreedArgs) {
                 it.second = std::move(now);
                 changed = true;
             }
@@ -75,11 +131,11 @@ buildInterprocSummary(ModuleMap &modules, const std::set<std::string> &freeFuncs
 
 static void handleStoreReset(Instruction &I,
                              PointerSlotUF &uf,
-                             std::map<Value *, unsigned> &freeCount) {//处理store指令对指针参数的覆盖情况，如果store指令的目标地址对应的指针参数被覆盖了，那么就将该指针参数的释放计数重置为0，避免误报重复释放
+                             FreeEnv &env) {//处理store指令对指针参数的覆盖情况，如果store指令的目标地址对应的指针参数被覆盖了，那么就将该指针参数释放状态重置，避免误报重复释放
     auto *SI = dyn_cast<StoreInst>(&I);
     if (!SI) return;
     Value *slotRoot = finalPtrSlot(SI->getPointerOperand(), uf);
-    if (slotRoot) freeCount.erase(slotRoot);
+    if (slotRoot) envSet(env, slotRoot, FreeState::NotFreed);
 }
 
 static void recordDoubleFreeBug(Function &F,//所在函数
@@ -106,21 +162,22 @@ static void recordDoubleFreeBug(Function &F,//所在函数
 static void handleDirectFree(Function &F,
                              CallInst *CI,
                              PointerSlotUF &uf,
-                             std::map<Value *, unsigned> &freeCount,
+                             FreeEnv &env,
                              std::set<std::string> &dedup,
                              std::vector<BugRecord> &out) {
     Value *arg0 = finalPtrSlot(CI->getArgOperand(0), uf);
     if (!arg0) return;
-    unsigned count = ++freeCount[arg0];
-    if (count <= 1) return;
-    recordDoubleFreeBug(F, CI, 0, false, dedup, out);
+    if (envGet(env, arg0) == FreeState::Freed) {
+        recordDoubleFreeBug(F, CI, 0, false, dedup, out);
+    }
+    envSet(env, arg0, FreeState::Freed);
 }
 
 static void handleSummaryFree(Function &F,
                               CallInst *CI,
                               PointerSlotUF &uf,
                               const std::map<Function *, FuncDFSummary> &summary,
-                              std::map<Value *, unsigned> &freeCount,
+                              FreeEnv &env,
                               std::set<std::string> &dedup,
                               std::vector<BugRecord> &out) {
     Function *CF = resolveDirectCallee(CI);
@@ -132,9 +189,18 @@ static void handleSummaryFree(Function &F,
         if (ai >= CI->arg_size()) continue;
         Value *r = finalPtrSlot(CI->getArgOperand(ai), uf);
         if (!r) continue;
-        unsigned count = ++freeCount[r];
-        if (count <= 1) continue;
-        recordDoubleFreeBug(F, CI, ai, true, dedup, out);
+        bool isMust = sit->second.mustFreedArgs.count(ai) > 0;
+        if (isMust) {
+            if (envGet(env, r) == FreeState::Freed) {
+                recordDoubleFreeBug(F, CI, ai, true, dedup, out);
+            }
+            envSet(env, r, FreeState::Freed);
+        } else {
+            // 仅可能释放：保持保守，减少冲突路径误报。
+            FreeState oldS = envGet(env, r);
+            if (oldS == FreeState::Freed) envSet(env, r, FreeState::Freed);
+            else envSet(env, r, FreeState::MaybeFreed);
+        }
     }
 }
 
@@ -144,21 +210,48 @@ static void analyzeOneFunction(Function &F,
                                std::set<std::string> &dedup,
                                std::vector<BugRecord> &out) {
     PointerSlotUF uf = buildPointerSlotUF(F);
-    std::map<Value *, unsigned> freeCount;
+    std::map<BasicBlock *, FreeEnv> inEnv;
+    std::set<BasicBlock *> inited;
+    std::deque<BasicBlock *> q;
 
-    for (Instruction &I : instructions(&F)) {
-        handleStoreReset(I, uf, freeCount);
+    BasicBlock *entry = &F.getEntryBlock();
+    inEnv[entry] = FreeEnv();
+    inited.insert(entry);
+    q.push_back(entry);
 
-        auto *CI = dyn_cast<CallInst>(&I);
-        if (!CI) continue;
+    while (!q.empty()) {
+        BasicBlock *BB = q.front();
+        q.pop_front();
+        FreeEnv env = inEnv[BB];
 
-        std::string callee = getCalledFuncName(CI).str();
-        if (freeFuncs.count(callee) && CI->arg_size() >= 1) {
-            handleDirectFree(F, CI, uf, freeCount, dedup, out);
-            continue;
+        for (Instruction &I : *BB) {
+            handleStoreReset(I, uf, env);
+
+            auto *CI = dyn_cast<CallInst>(&I);
+            if (!CI) continue;
+
+            std::string callee = getCalledFuncName(CI).str();
+            if (freeFuncs.count(callee) && CI->arg_size() >= 1) {
+                handleDirectFree(F, CI, uf, env, dedup, out);
+                continue;
+            }
+
+            handleSummaryFree(F, CI, uf, summary, env, dedup, out);
         }
 
-        handleSummaryFree(F, CI, uf, summary, freeCount, dedup, out);
+        Instruction *T = BB->getTerminator();
+        for (unsigned i = 0; i < T->getNumSuccessors(); ++i) {
+            BasicBlock *S = T->getSuccessor(i);
+            if (!inited.count(S)) {
+                inEnv[S] = env;
+                inited.insert(S);
+                q.push_back(S);
+                continue;
+            }
+            if (mergeEnv(inEnv[S], env)) {
+                q.push_back(S);
+            }
+        }
     }
 }
 
